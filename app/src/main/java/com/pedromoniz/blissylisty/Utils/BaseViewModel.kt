@@ -9,11 +9,11 @@ abstract class BaseViewModel : ViewModel() {
     val navDirection = HybridLiveEvent<NavDirections>()
     val failure = HybridLiveEvent<Failure>()
 
-    private fun handleNavigation(navDirection: NavDirections) {
+    protected fun handleNavigation(navDirection: NavDirections) {
         this.navDirection.postValue(navDirection)
     }
 
-    private fun handleFailure(failure: Failure) {
+    protected fun handleFailure(failure: Failure) {
         this.failure.postValue(failure, false)
     }
 }

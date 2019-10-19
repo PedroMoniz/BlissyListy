@@ -8,4 +8,11 @@ class QuestionRepository(
     private val questionLocalSources: QuestionSources,
     private val questionRemoteSources: QuestionSources
 ) : QuestionGateway {
+    override suspend fun CheckQuestionsServerAvailability(): Boolean {
+        try {
+            return questionRemoteSources.CheckServerAvailability()
+        } catch (e: Exception) {
+            throw Exception()
+        }
+    }
 }

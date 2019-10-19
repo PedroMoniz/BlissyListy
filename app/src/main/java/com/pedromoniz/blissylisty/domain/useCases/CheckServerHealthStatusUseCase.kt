@@ -10,18 +10,16 @@ class CheckServerHealthStatusUseCase(private val gateway: QuestionGateway) :
     UseCase<Boolean, UseCase.NoParams>() {
 
     override suspend fun run(params: NoParams): Either<Failure, Boolean> {
-//        return try {
-//            val data = gateway.dummyCall()
-//            return if (data.isValid()) {
-//                Either.Right(data)
-//            } else {
-//                Either.Left(CheckServerHealthStatusFailure)
-//            }
-//        }
-//        catch (exp: Exception) {
-//            Either.Left(Failure.NetworkConnection)
-//        }
-        return Either.Left(Failure.NetworkConnection)
+        return try {
+            val isAvailable = gateway.CheckQuestionsServerAvailability()
+            return if (isAvailable) {
+                Either.Right(isAvailable)
+            } else {
+                Either.Left(CheckServerHealthStatusFailure)
+            }
+        } catch (exp: Exception) {
+            Either.Left(CheckServerHealthStatusFailure)
+        }
     }
 
     object CheckServerHealthStatusFailure : Failure.FeatureFailure()

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BlissyListy</string>
+    <string name="Loading_frag_tv_checking_server">Checking Server</string>
 </resources>
