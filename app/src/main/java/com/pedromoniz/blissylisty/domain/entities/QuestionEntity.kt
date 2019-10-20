@@ -19,7 +19,7 @@ data class QuestionEntity(
 }
 
 data class ChoiceEntity(
-    val choice: String,
+    var choice: String,
     val votes: String
 ) {
     fun isValid() = choice.isNotEmpty() || votes.isNotEmpty()

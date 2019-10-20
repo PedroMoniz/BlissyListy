@@ -11,6 +11,7 @@ interface BlissyAPI {
         private const val PARAM_OFFSET = "offset"
         private const val PARAM_FILTER = "filter"
         private const val QUESTIONS_LIST ="questions"
+        private const val QUESTION ="questions/{id}"
     }
 
     @Headers("Content-Type: application/json")
@@ -24,4 +25,17 @@ interface BlissyAPI {
         @Query(PARAM_OFFSET) offset: String,
         @Query(PARAM_FILTER) filter: String?
     ): List<QuestionRemoteModel>
+
+    @Headers("Content-Type: application/json")
+    @GET(QUESTION)
+    suspend fun fetchQuestion(
+        @Path("id") id: String
+    ): QuestionRemoteModel
+
+    @Headers("Content-Type: application/json")
+    @PUT(QUESTION)
+    suspend fun updateQuestion(
+        @Path("id") id: String,
+        @Body question: QuestionRemoteModel
+    ): QuestionRemoteModel
 }

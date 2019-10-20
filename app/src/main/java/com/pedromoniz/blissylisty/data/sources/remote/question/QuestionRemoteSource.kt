@@ -3,6 +3,7 @@ package com.pedromoniz.blissylisty.data.sources.remote.question
 import com.pedromoniz.blissylisty.data.sources.QuestionSources
 import com.pedromoniz.blissylisty.data.sources.remote.BlissyAPI
 import com.pedromoniz.blissylisty.data.sources.remote.NetworkException
+import com.pedromoniz.blissylisty.data.sources.remote.models.ChoiceRemoteModel
 import com.pedromoniz.blissylisty.data.sources.remote.models.HealthStatusRemoteModel
 import com.pedromoniz.blissylisty.data.sources.remote.models.QuestionRemoteModel
 import com.pedromoniz.blissylisty.domain.entities.QuestionEntity
@@ -13,7 +14,7 @@ class QuestionRemoteSource(
 ) : QuestionSources {
 
 
-    override suspend fun CheckServerAvailability(): Boolean =
+    override suspend fun checkServerAvailability(): Boolean =
         request(
             {
                 blissyAPI.checkHealthStatus()
@@ -22,7 +23,7 @@ class QuestionRemoteSource(
             HealthStatusRemoteModel.empty()
         )
 
-    override suspend fun FetchQuestions(offset: String, filter: String?): List<QuestionEntity> =
+    override suspend fun fetchQuestions(offset: String, filter: String?): List<QuestionEntity> =
         request(
             {
                 blissyAPI.fetchQuestions("10", offset, filter)
@@ -31,6 +32,31 @@ class QuestionRemoteSource(
             emptyList()
         )
 
+    override suspend fun fetchQuestion(id: String): QuestionEntity = request(
+        {
+            blissyAPI.fetchQuestion(id)
+        },
+        { it.toQuestion() },
+        QuestionRemoteModel.empty()
+    )
+
+    override suspend fun updateQuestion(id: String, question: QuestionEntity): QuestionEntity = request(
+        {
+            val questionRemoteModel = QuestionRemoteModel(
+                question.id,
+                question.question,
+                question.image_url,
+                question.thumb_url,
+                question.published_at,
+                question.choices.map { choiceEntity ->
+                    ChoiceRemoteModel(choiceEntity.choice, choiceEntity.votes)
+
+                })
+            blissyAPI.updateQuestion(id,questionRemoteModel)
+        },
+        { it.toQuestion() },
+        QuestionRemoteModel.empty()
+    )
 
     private suspend fun <T, F, R : T> request(
         response: suspend () -> R,

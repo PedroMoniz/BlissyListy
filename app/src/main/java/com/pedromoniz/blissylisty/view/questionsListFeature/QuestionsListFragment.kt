@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -60,6 +61,8 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
         viewModel.navDirection.observe(this, Observer { directions ->
             findNavController().navigate(directions)
         })
@@ -70,7 +73,6 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
         setupListAdapter()
         viewModel.loadQuestions(filter = viewModel.filter.value)
     }
-
 
     private fun setupListAdapter() {
         val adapter = QuestionsListAdapter(viewModel)
@@ -95,7 +97,6 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
             adapter.setData(if (it.isNullOrEmpty()) emptyList() else it.toList())
         })
     }
-
 
     private fun handleFailure(failure: Failure?) {
         when (failure) {
