@@ -19,7 +19,13 @@ class LoadingViewModel(
     }
 
     private fun handleSuccess(success: Boolean) {
-        handleNavigation(LoadingFragmentDirections.actionLoadingFragmentToQuestionsListFragment())
-    }
 
+        //to use the paged version just change the flag
+        //Both versions work although not fully tested/implemented.
+        val usingPagination = false
+        if(usingPagination)
+            handleNavigation(LoadingFragmentDirections.actionLoadingFragmentToQuestionsPagedListFragment())
+        else
+            handleNavigation(LoadingFragmentDirections.actionLoadingFragmentToQuestionsListFragment())
+    }
 }

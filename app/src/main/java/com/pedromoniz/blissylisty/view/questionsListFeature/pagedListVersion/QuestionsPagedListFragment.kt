@@ -1,10 +1,9 @@
-package com.pedromoniz.blissylisty.view.questionsListFeature
+package com.pedromoniz.blissylisty.view.questionsListFeature.pagedListVersion
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -13,13 +12,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pedromoniz.blissylisty.MainActivity
 import com.pedromoniz.blissylisty.R
 import com.pedromoniz.blissylisty.Utils.Failure
+import com.pedromoniz.blissylisty.view.questionsListFeature.QuestionsListAdapter
+import com.pedromoniz.blissylisty.view.questionsListFeature.QuestionsListViewModel
 import kotlinx.android.synthetic.main.questions_list_fragment.*
+import kotlinx.android.synthetic.main.questions_paged_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+//The paged version works but was not fully tested and implemented(edge cases were dismissed and data is not being invalidated)
+//In order to use it just go to the loading viewmodel and change the direction to this fragment
 
-class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
+class QuestionsPagedListFragment : Fragment(R.layout.questions_paged_list_fragment) {
 
-    private val viewModel: QuestionsListViewModel by viewModel()
+    private val viewModel: QuestionsPagedListViewModel by viewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,32 +72,15 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
         })
 
         setupListAdapter()
-        viewModel.loadQuestions(filter = viewModel.filter.value)
     }
 
-
     private fun setupListAdapter() {
-        val adapter = QuestionsListAdapter(viewModel)
-        questionsListFragmentRecyclerView.adapter = adapter
-        questionsListFragmentRecyclerView.addOnScrollListener(object :
-            RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
+        val adapter = QuestionsPagedListAdapter(viewModel)
+        questionsPagedListFragmentRecyclerView.adapter = adapter
 
-                if (!recyclerView.canScrollVertically(1)) {
-
-                    //todo, add some logic so it is called once. the logic could very well be on the side of the viewmodel loadquestions method
-
-                    viewModel.loadQuestions(
-                        viewModel.questions.value!!.size,
-                        viewModel.filter.value
-                    )
-                }
-            }
-        })
-        viewModel.questions.observe(this, Observer {
-            adapter.setData(if (it.isNullOrEmpty()) emptyList() else it.toList())
-        })
+        // Subscribe the adapter to the ViewModel, so the items in the adapter are refreshed
+        // when the list changes
+        viewModel.questions.observe(this, Observer(adapter::submitList))
     }
 
 

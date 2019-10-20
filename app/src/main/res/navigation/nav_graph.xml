@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_loadingFragment_to_questionsListFragment"
             app:destination="@id/questionsListFragment" />
+        <action
+            android:id="@+id/action_loadingFragment_to_questionsPagedListFragment"
+            app:destination="@id/questionsPagedListFragment" />
     </fragment>
     <fragment
         android:id="@+id/questionsListFragment"
@@ -30,6 +33,14 @@
         tools:layout="@layout/question_fragment" >
         <argument
             android:name="questionID"
-            app:argType="integer" />
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/questionsPagedListFragment"
+        android:name="com.pedromoniz.blissylisty.view.questionsListFeature.pagedListVersion.QuestionsPagedListFragment"
+        android:label="QuestionsPagedListFragment" >
+        <action
+            android:id="@+id/action_questionsPagedListFragment_to_questionFragment"
+            app:destination="@id/questionFragment" />
     </fragment>
 </navigation>

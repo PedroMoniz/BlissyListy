@@ -1,27 +1,27 @@
-package com.pedromoniz.blissylisty.view.questionsListFeature
+package com.pedromoniz.blissylisty.view.questionsListFeature.pagedListVersion
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.pedromoniz.blissylisty.databinding.QuestionTemplateRowBinding
+import com.pedromoniz.blissylisty.databinding.QuestionPagedTemplateRowBinding
 import com.pedromoniz.blissylisty.domain.entities.QuestionEntity
-import kotlinx.android.synthetic.main.question_template_row.view.*
+import kotlinx.android.synthetic.main.question_paged_template_row.view.*
 
 
-class QuestionsListAdapter(
-    private val viewModel: QuestionsListViewModel,
-    private var data: List<QuestionEntity> = emptyList()
-) : RecyclerView.Adapter<QuestionsListAdapter.BaseQuestionViewHolder<*>>() {
-
-
-    override fun getItemCount() = data.size
+class QuestionsPagedListAdapter(
+    private val viewModel: QuestionsPagedListViewModel
+) : PagedListAdapter<QuestionEntity, QuestionsPagedListAdapter.BaseQuestionViewHolder<*>>(
+    diffCallback
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseQuestionViewHolder<*> =
         when (viewType) {
             TYPE_SIMPLE -> {
-                val binding = QuestionTemplateRowBinding.inflate(
+                val binding = QuestionPagedTemplateRowBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -32,9 +32,9 @@ class QuestionsListAdapter(
         }
 
     override fun onBindViewHolder(holder: BaseQuestionViewHolder<*>, position: Int) {
-        val element = data[position]
+        val element =  getItem(position)
         when (holder) {
-            is SimpleQuestionViewHolder -> holder.bind(element)
+            is SimpleQuestionViewHolder -> element?.let { holder.bind(it) }
             else -> throw IllegalArgumentException()
         }
     }
@@ -43,16 +43,11 @@ class QuestionsListAdapter(
         return TYPE_SIMPLE
     }
 
-    fun setData(newData: List<QuestionEntity>) {
-        data = newData
-        notifyDataSetChanged()
-    }
-
     abstract class BaseQuestionViewHolder<T>(root: View) : RecyclerView.ViewHolder(root) {
         abstract fun bind(item: T)
     }
 
-    inner class SimpleQuestionViewHolder(val binding: QuestionTemplateRowBinding) :
+    inner class SimpleQuestionViewHolder(val binding: QuestionPagedTemplateRowBinding) :
         BaseQuestionViewHolder<QuestionEntity>(binding.root) {
 
         override fun bind(item: QuestionEntity) {
@@ -61,7 +56,7 @@ class QuestionsListAdapter(
                 .load(item.thumb_url)
                 .centerCrop()
                 .thumbnail()
-                .into(itemView.questionTemplateImageView)
+                .into(itemView.questionPagedTemplateImageView)
 
 
             binding.viewmodel = viewModel
@@ -73,5 +68,12 @@ class QuestionsListAdapter(
 
     companion object {
         private const val TYPE_SIMPLE = 0
+
+        private val diffCallback = object : DiffUtil.ItemCallback<QuestionEntity>() {
+
+            override fun areItemsTheSame(oldItem: QuestionEntity, newItem: QuestionEntity) = oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: QuestionEntity, newItem: QuestionEntity) = oldItem == newItem
+        }
     }
 }

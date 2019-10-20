@@ -1,17 +1,27 @@
 package com.pedromoniz.blissylisty.data.sources.remote
 
 import com.pedromoniz.blissylisty.data.sources.remote.models.HealthStatusRemoteModel
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import com.pedromoniz.blissylisty.data.sources.remote.models.QuestionRemoteModel
+import retrofit2.http.*
 
 interface BlissyAPI {
     companion object {
         private const val HEALTH = "health"
+        private const val PARAM_LIMIT = "limit"
+        private const val PARAM_OFFSET = "offset"
+        private const val PARAM_FILTER = "filter"
+        private const val QUESTIONS_LIST ="questions"
     }
 
     @Headers("Content-Type: application/json")
     @GET(HEALTH)
     suspend fun checkHealthStatus(): HealthStatusRemoteModel
+
+    @Headers("Content-Type: application/json")
+    @GET(QUESTIONS_LIST)
+    suspend fun fetchQuestions(
+        @Query(PARAM_LIMIT) limit: String,
+        @Query(PARAM_OFFSET) offset: String,
+        @Query(PARAM_FILTER) filter: String?
+    ): List<QuestionRemoteModel>
 }
