@@ -7,22 +7,31 @@ import com.pedromoniz.blissylisty.domain.gateways.QuestionGateway
 
 
 class ShareQuestionSearchQueryUseCase(private val gateway: QuestionGateway) :
-    UseCase<Boolean, UseCase.NoParams>() {
+    UseCase<Boolean, ShareQuestionSearchQueryUseCase.shareQueryRequest>() {
 
-    override suspend fun run(params: NoParams): Either<Failure, Boolean> {
-//        return try {
-//            val data = gateway.dummyCall()
-//            return if (data.isValid()) {
-//                Either.Right(data)
-//            } else {
-//                Either.Left(ShareQuestionSearchQueryFailure)
-//            }
-//        }
-//        catch (exp: Exception) {
-//            Either.Left(Failure.NetworkConnection)
-//        }
-        return Either.Left(Failure.NetworkConnection)
+
+    override suspend fun run(params: shareQueryRequest): Either<Failure, Boolean> {
+        return try {
+
+            if(params.filter.isNullOrEmpty())
+                Either.Left(ShareQuestionSearchQueryFailure)
+
+            val url :String = "blissrecruitment://questions?question_filter="
+            url.plus(params.filter)
+
+            val isAvailable = gateway.Share(params.email, url)
+            return if (isAvailable) {
+                Either.Right(isAvailable)
+            } else {
+                Either.Left(ShareQuestionSearchQueryFailure)
+            }
+        } catch (exp: Exception) {
+            Either.Left(ShareQuestionSearchQueryFailure)
+        }
     }
 
     object ShareQuestionSearchQueryFailure : Failure.FeatureFailure()
+
+
+    data class shareQueryRequest(val email: String, val filter: String?)
 }

@@ -7,6 +7,11 @@ import com.pedromoniz.blissylisty.domain.entities.QuestionEntity
 class QuestionLocalSource (
     private val questionDao: QuestionDao
 ) : QuestionSources {
+
+    override suspend fun share(email: String, url: String): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override suspend fun fetchQuestion(id: String): QuestionEntity {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

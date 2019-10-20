@@ -13,8 +13,18 @@ class QuestionRepository(
     private val questionRemoteSources: QuestionSources
 ) : QuestionGateway {
 
+
     private var cachedQuestions: ConcurrentMap<String, QuestionEntity>? = ConcurrentHashMap()
+
     private var cachedKeyedQuestions: ConcurrentMap<String, QuestionEntity>? = ConcurrentHashMap()
+
+    override suspend fun Share(email: String, url: String): Boolean {
+        try {
+            return questionRemoteSources.share(email,url)
+        } catch (e: Exception) {
+            throw Exception()
+        }
+    }
 
     override suspend fun CheckQuestionsServerAvailability(): Boolean {
         try {
@@ -61,7 +71,6 @@ class QuestionRepository(
             throw Exception()
         }
     }
-
 
     override suspend fun GetQuestion(id: String): QuestionEntity {
         try {

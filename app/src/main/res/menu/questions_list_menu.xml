@@ -6,4 +6,8 @@
         android:icon="@drawable/ic_search_black_24dp"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom" />
+    <item android:id="@+id/share"
+        android:title="Share"
+        android:icon="@drawable/ic_send_black_24dp"
+        app:showAsAction="always" />
 </menu>

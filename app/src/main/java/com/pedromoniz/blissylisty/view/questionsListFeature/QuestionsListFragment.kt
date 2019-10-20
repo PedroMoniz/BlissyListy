@@ -1,10 +1,12 @@
 package com.pedromoniz.blissylisty.view.questionsListFeature
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -18,10 +20,11 @@ import kotlinx.android.synthetic.main.questions_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
+
+
 class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
 
     private val viewModel: QuestionsListViewModel by viewModel()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +38,7 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
         val searchView =
             SearchView((context as MainActivity).supportActionBar?.themedContext ?: context)
         menu.findItem(R.id.search).apply {
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_ALWAYS)
             actionView = searchView
         }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -56,6 +59,31 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
                 return false
             }
         })
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            R.id.share -> showShareDialog()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showShareDialog() {
+        val txtEmail = EditText(context)
+        txtEmail.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        AlertDialog.Builder(context)
+            .setView(txtEmail)
+            .setTitle("Share")
+            .setMessage("Enter your email")
+            .setPositiveButton(
+                "Send"
+            ) { _, _ ->
+                viewModel.share(txtEmail.text.toString())
+            }
+            .setIcon(android.R.drawable.ic_menu_send)
+            .show()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -38,7 +38,6 @@ class LoadingFragment : Fragment(com.pedromoniz.blissylisty.R.layout.loading_fra
     }
 
     private fun showTryAgainDialog() {
-
         AlertDialog.Builder(context)
             .setTitle("Try again")
             .setMessage("Server health was not OK")

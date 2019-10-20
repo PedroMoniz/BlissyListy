@@ -38,6 +38,18 @@ class QuestionViewModel(
         }
     }
 
+    fun share(email: String) {
+        shareQuestionUseCase(
+            viewModelScope,
+            ShareQuestionUseCase.shareQuestionRequest(email, question.value!!.id)
+        ) {
+            it.either(
+                ::handleFailure,
+                ::handleSuccessOnShare
+            )
+        }
+    }
+
     private fun handleSuccessOnLoad(question: QuestionEntity) {
         _question.value = question
     }
@@ -46,4 +58,6 @@ class QuestionViewModel(
         _question.value = questionUpdated
     }
 
+    private fun handleSuccessOnShare(success: Boolean) {
+    }
 }

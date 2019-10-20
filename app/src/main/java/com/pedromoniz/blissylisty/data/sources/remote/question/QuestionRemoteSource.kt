@@ -4,7 +4,7 @@ import com.pedromoniz.blissylisty.data.sources.QuestionSources
 import com.pedromoniz.blissylisty.data.sources.remote.BlissyAPI
 import com.pedromoniz.blissylisty.data.sources.remote.NetworkException
 import com.pedromoniz.blissylisty.data.sources.remote.models.ChoiceRemoteModel
-import com.pedromoniz.blissylisty.data.sources.remote.models.HealthStatusRemoteModel
+import com.pedromoniz.blissylisty.data.sources.remote.models.StatusRemoteModel
 import com.pedromoniz.blissylisty.data.sources.remote.models.QuestionRemoteModel
 import com.pedromoniz.blissylisty.domain.entities.QuestionEntity
 import retrofit2.HttpException
@@ -12,7 +12,14 @@ import retrofit2.HttpException
 class QuestionRemoteSource(
     private val blissyAPI: BlissyAPI
 ) : QuestionSources {
-
+    override suspend fun share(email: String, url: String): Boolean =
+        request(
+            {
+                blissyAPI.share(email,url)
+            },
+            { it.toBoolean() },
+            StatusRemoteModel.empty()
+        )
 
     override suspend fun checkServerAvailability(): Boolean =
         request(
@@ -20,7 +27,7 @@ class QuestionRemoteSource(
                 blissyAPI.checkHealthStatus()
             },
             { it.toBoolean() },
-            HealthStatusRemoteModel.empty()
+            StatusRemoteModel.empty()
         )
 
     override suspend fun fetchQuestions(offset: String, filter: String?): List<QuestionEntity> =

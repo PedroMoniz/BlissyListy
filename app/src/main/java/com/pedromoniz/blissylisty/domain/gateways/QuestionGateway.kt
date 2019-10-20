@@ -8,5 +8,6 @@ interface QuestionGateway {
     suspend fun GetQuestions(request: GetQuestionsUseCase.GetQuestionsRequest): List<QuestionEntity>
     suspend fun UpdateQuestion(question: QuestionEntity): QuestionEntity
     suspend fun GetQuestion(id: String): QuestionEntity
+    suspend fun Share(email: String, url: String): Boolean
 
 }

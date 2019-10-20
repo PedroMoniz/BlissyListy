@@ -25,8 +25,11 @@ class QuestionsListViewModel(
     val questions: LiveData<List<QuestionEntity>> = _questions
 
 
-    fun loadQuestions(offset:Int=0,filter:String? = null) {
-        getQuestionsUseCase(viewModelScope, GetQuestionsUseCase.GetQuestionsRequest(offset,filter)) {
+    fun loadQuestions(offset: Int = 0, filter: String? = null) {
+        getQuestionsUseCase(
+            viewModelScope,
+            GetQuestionsUseCase.GetQuestionsRequest(offset, filter)
+        ) {
             it.either(
                 ::handleFailure,
                 ::handleSuccess
@@ -39,11 +42,30 @@ class QuestionsListViewModel(
     }
 
     fun onQuestionSelected(questionId: String) {
-        handleNavigation(QuestionsListFragmentDirections.actionQuestionsListFragmentToQuestionFragment(questionId))
+        handleNavigation(
+            QuestionsListFragmentDirections.actionQuestionsListFragmentToQuestionFragment(
+                questionId
+            )
+        )
     }
 
     fun setFilter(query: String?) {
         _filter.value = query
         loadQuestions(filter = query)
+    }
+
+    fun share(email: String) {
+        shareQuestionSearchQueryUseCase(
+            viewModelScope,
+            ShareQuestionSearchQueryUseCase.shareQueryRequest(email, filter.value)
+        ) {
+            it.either(
+                ::handleFailure,
+                ::handleSuccessOnShare
+            )
+        }
+    }
+
+    private fun handleSuccessOnShare(success: Boolean) {
     }
 }

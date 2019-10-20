@@ -1,6 +1,6 @@
 package com.pedromoniz.blissylisty.data.sources.remote
 
-import com.pedromoniz.blissylisty.data.sources.remote.models.HealthStatusRemoteModel
+import com.pedromoniz.blissylisty.data.sources.remote.models.StatusRemoteModel
 import com.pedromoniz.blissylisty.data.sources.remote.models.QuestionRemoteModel
 import retrofit2.http.*
 
@@ -10,13 +10,24 @@ interface BlissyAPI {
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_OFFSET = "offset"
         private const val PARAM_FILTER = "filter"
-        private const val QUESTIONS_LIST ="questions"
-        private const val QUESTION ="questions/{id}"
+        private const val QUESTIONS_LIST = "questions"
+        private const val QUESTION = "questions/{id}"
+        private const val SHARE = "share"
+        private const val PARAM_EMAIL = "destination_email"
+        private const val PARAM_URL = "content_url"
     }
 
     @Headers("Content-Type: application/json")
     @GET(HEALTH)
-    suspend fun checkHealthStatus(): HealthStatusRemoteModel
+    suspend fun checkHealthStatus(): StatusRemoteModel
+
+
+    @Headers("Content-Type: application/json")
+    @POST(SHARE)
+    suspend fun share(
+        @Query(PARAM_EMAIL) email: String,
+        @Query(PARAM_URL) content: String
+    ): StatusRemoteModel
 
     @Headers("Content-Type: application/json")
     @GET(QUESTIONS_LIST)
