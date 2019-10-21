@@ -38,7 +38,7 @@ class QuestionFragment : Fragment() {
             viewmodel = viewModel
         }
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
-        viewModel.loadQuestion(args.questionID)
+        viewModel.loadQuestion(args.questionId)
 
         return view
     }
@@ -52,13 +52,11 @@ class QuestionFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            //todo, this part may have to be improved when entering via a link
             android.R.id.home -> activity?.onBackPressed()
             R.id.share -> showShareDialog()
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     private fun showShareDialog() {
         val txtEmail = EditText(context)

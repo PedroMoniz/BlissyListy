@@ -12,19 +12,21 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.pedromoniz.blissylisty.MainActivity
 import com.pedromoniz.blissylisty.R
 import com.pedromoniz.blissylisty.Utils.Failure
+import kotlinx.android.synthetic.main.question_template_row.view.*
 import kotlinx.android.synthetic.main.questions_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
-
 
 
 class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
 
     private val viewModel: QuestionsListViewModel by viewModel()
+
+    private val args: QuestionsListFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,7 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_ALWAYS)
             actionView = searchView
         }
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 viewModel.setFilter(query)
@@ -59,8 +62,12 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
                 return false
             }
         })
-    }
 
+        if(args.filter!=null) {
+            menu.findItem(R.id.search).expandActionView()
+            searchView.setQuery(args.filter, false)
+        }
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
@@ -99,7 +106,9 @@ class QuestionsListFragment : Fragment(R.layout.questions_list_fragment) {
         })
 
         setupListAdapter()
-        viewModel.loadQuestions(filter = viewModel.filter.value)
+
+        if (args.filter == null)
+            viewModel.loadQuestions(filter = viewModel.filter.value)
     }
 
     private fun setupListAdapter() {

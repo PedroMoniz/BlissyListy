@@ -16,15 +16,28 @@
         <action
             android:id="@+id/action_loadingFragment_to_questionsPagedListFragment"
             app:destination="@id/questionsPagedListFragment" />
+        <action
+            android:id="@+id/action_loadingFragment_to_questionsListFragment2"
+            app:destination="@id/questionsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/questionsListFragment"
         android:name="com.pedromoniz.blissylisty.view.questionsListFeature.QuestionsListFragment"
         android:label="questions_list_fragment"
         tools:layout="@layout/questions_list_fragment" >
+        <argument
+            android:name="filter"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_questionsListFragment_to_questionFragment"
             app:destination="@id/questionFragment" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="blissrecruitment://questions?question_filter={filter}" />
+        <deepLink
+            android:id="@+id/deepLink3"
+            app:uri="blissrecruitment://questions" />
     </fragment>
     <fragment
         android:id="@+id/questionFragment"
@@ -32,8 +45,11 @@
         android:label="question_fragment"
         tools:layout="@layout/question_fragment" >
         <argument
-            android:name="questionID"
+            android:name="questionId"
             app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="blissrecruitment://questions?question_id={questionId}" />
     </fragment>
     <fragment
         android:id="@+id/questionsPagedListFragment"

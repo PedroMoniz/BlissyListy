@@ -11,6 +11,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +27,29 @@ class MainActivity : AppCompatActivity() {
         filters.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
         registerReceiver(broadcastReceiver, filters)
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        val data = intent?.data
+
+        if (data != null) {
+            try {
+                if (data.getQueryParameter("question_id") != null)
+                    return
+            } catch (e: Exception) {
+            }
+
+            try {
+                if (data.getQueryParameter("question_filter") != null)
+                    return
+            } catch (e: Exception) {
+            }
+
+        }
+
+    }
+
 
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager =

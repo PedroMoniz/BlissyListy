@@ -26,6 +26,6 @@ class LoadingViewModel(
         if(usingPagination)
             handleNavigation(LoadingFragmentDirections.actionLoadingFragmentToQuestionsPagedListFragment())
         else
-            handleNavigation(LoadingFragmentDirections.actionLoadingFragmentToQuestionsListFragment())
+            handleNavigation(LoadingFragmentDirections.actionLoadingFragmentToQuestionsListFragment(null))
     }
 }
